@@ -153,10 +153,6 @@ After training and evaluation:
 - `results/verification_analysis.png` — Genuine vs impostor distributions
 - `results/dataset_distribution.png` — Images per identity histogram
 
-### GenAI Usage Disclosure
-
-This codebase was developed with the assistance of GenAI tools for code generation, documentation writing, and architectural design. The core methodology (ResNet-50 + ArcFace) follows established academic literature in face recognition.
-
 ### References
 
 - Deng, J., et al. "ArcFace: Additive Angular Margin Loss for Deep Face Recognition." CVPR, 2019.
