@@ -1,0 +1,42 @@
+{
+  "sample": {
+    "identities": 105,
+    "originals_scored": 314,
+    "anon_paired": 314,
+    "missing_from_anon": [
+      "elon_musk_01.jpg"
+    ]
+  },
+  "closed_set": {
+    "clean_top1": 0.9012738853503185,
+    "clean_top5": 0.964968152866242,
+    "anon_top1": 0.1751592356687898,
+    "anon_top5": 0.4267515923566879,
+    "random_chance_top1": 0.009523809523809525,
+    "top1_drop_pp": 72.61146496815287,
+    "accuracy_ratio_to_chance_clean": 94.63375796178343,
+    "accuracy_ratio_to_chance_anon": 18.39171974522293
+  },
+  "verification": {
+    "threshold_eer": 0.35,
+    "auth_rate_clean_genuine": 0.8306709265175719,
+    "auth_rate_anon_genuine": 0.37579617834394907,
+    "auth_rate_impostor": 0.012,
+    "privacy_protection_rate": 0.6242038216560509,
+    "auth_rate_anon_genuine_at_t0.5": 0.20063694267515925
+  },
+  "cosine": {
+    "self": 1.0,
+    "clean_genuine_mean": 0.6028154492378235,
+    "clean_genuine_std": 0.2391166388988495,
+    "clean_genuine_n": 313,
+    "anon_genuine_mean": 0.2964136600494385,
+    "anon_genuine_std": 0.23311081528663635,
+    "anon_genuine_median": 0.258128821849823,
+    "anon_genuine_n": 314,
+    "impostor_mean": 0.0006943924236111343,
+    "impostor_std": 0.11601780354976654,
+    "impostor_n": 500
+  },
+  "notes": "Evaluation on Pins test split (seed=42), same 105 identities the FaceRecognizer was trained on. Top-1 accuracy is the primary privacy metric. Threshold-based rates use the EER-matched threshold t* read from results/evaluation_results.json; a second auth rate is reported at t=0.5 for comparison with the prior CelebA-HQ run."
+}

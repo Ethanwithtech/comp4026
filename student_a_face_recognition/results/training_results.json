@@ -1,0 +1,19 @@
+{
+  "test_loss": 1.6988818506861842,
+  "test_accuracy": 93.45521023765997,
+  "best_val_accuracy": 93.00699300699301,
+  "num_classes": 105,
+  "total_training_time_minutes": 291.84214857021965,
+  "config": {
+    "backbone": "resnet50",
+    "embedding_dim": 512,
+    "loss_type": "arcface",
+    "batch_size": 32,
+    "num_epochs": 30,
+    "learning_rate": 0.001,
+    "arcface_margin": 0.3,
+    "arcface_scale": 32.0,
+    "warmup_epochs": 5
+  },
+  "timestamp": "2026-03-11 15:09:56"
+}

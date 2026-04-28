@@ -1,0 +1,18 @@
+{
+  "n_pairs": 101,
+  "n_impostor_pairs": 500,
+  "threshold": 0.5,
+  "genuine_cosine_mean": 0.36805400252342224,
+  "genuine_cosine_std": 0.17325429618358612,
+  "genuine_cosine_median": 0.3836737871170044,
+  "genuine_cosine_p05": 0.12027689814567566,
+  "genuine_cosine_p95": 0.6566852927207947,
+  "impostor_cosine_mean": 0.0413338814843446,
+  "impostor_cosine_std": 0.1483982287097839,
+  "self_similarity_mean": 1.0,
+  "authentication_success_on_anonymised": 0.21782178217821782,
+  "privacy_protection_rate": 0.7821782178217822,
+  "impostor_auth_rate_at_same_threshold": 0.002,
+  "closed_set_id_leakage_rate": 0.0891089108910891,
+  "note": "Original dir = real CelebA-HQ images, Anonymised dir = Student B DDPM outputs. FaceRecognizer is trained on Pins (105 celebrities) and reused here as a discriminator."
+}

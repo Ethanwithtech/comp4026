@@ -1,0 +1,18 @@
+{
+  "original_identification": {
+    "accuracy": 93.45521023765995,
+    "topk_accuracy": {
+      "top1_accuracy": 93.45521023765995,
+      "top5_accuracy": 98.02559414990858
+    },
+    "num_samples": 2735
+  },
+  "original_verification": {
+    "eer": 0.0528,
+    "tar_at_far": {
+      "TAR@FAR=0.1": 0.9694,
+      "TAR@FAR=0.01": 0.8576,
+      "TAR@FAR=0.001": 0.7326
+    }
+  }
+}

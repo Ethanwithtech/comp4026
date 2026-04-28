@@ -1,0 +1,24 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]: COMP4026 · Computer Vision and Pattern Recognition · 2nd Sem 2025-26
+    - heading "Anonymised Facial Expression Recognition" [level=1] [ref=e5]
+    - paragraph [ref=e6]: A three-model pipeline that preserves expression while concealing identity, evaluated on a strong 105-identity face recognition baseline.
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]: Face Recognition
+        - generic [ref=e10]: Deng Yuchen
+        - generic [ref=e11]: "22256342"
+      - generic [ref=e12]:
+        - generic [ref=e13]: Face Anonymisation
+        - generic [ref=e14]: Wang Xukun
+        - generic [ref=e15]: "22254870"
+      - generic [ref=e16]:
+        - generic [ref=e17]: Expression Recognition
+        - generic [ref=e18]: Yi Tingxuan
+        - generic [ref=e19]: "22258108"
+  - generic [ref=e20]:
+    - button "◀" [ref=e21] [cursor=pointer]
+    - button "▶" [ref=e22] [cursor=pointer]
+  - generic [ref=e23]:
+    - generic [ref=e24]: COMP4026 · Anonymised Facial Expression Recognition
+    - generic [ref=e27]: 1 / 21

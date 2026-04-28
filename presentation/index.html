@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anonymised Facial Expression Recognition — 7-min Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg-0: #0a0a0a;
+    --fg-1: #2a2a2a;
+    --fg-2: #6b7280;
+    --fg-3: #9ca3af;
+    --border: #e5e7eb;
+    --card-bg: #f9fafb;
+    --accent: #3bb6f5;
+    --accent-light: #7dd3fc;
+    --accent-dark: #0369a1;
+    --deep-blue-1: #1d4ed8;
+    --deep-blue-2: #1e40af;
+    --deep-blue-3: #1e3a8a;
+    --warm: #f59e0b;
+    --danger: #ef4444;
+    --success: #10b981;
+    --shadow: 0 4px 16px rgba(15,23,42,.06);
+  }
+  * { box-sizing: border-box; }
+  html,body { margin:0; padding:0; width:100%; height:100%;
+    background: var(--bg); color: var(--fg-0);
+    font-family: "Inter","Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing: antialiased; overflow: hidden;
+  }
+  .deck { width:100vw; height:100vh; position:relative; overflow:hidden; }
+  .slide { position:absolute; inset:0; padding:5vh 7vw; display:none;
+    flex-direction:column; background:var(--bg);
+    opacity:0; transform:translateX(30px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .slide.active { display:flex; opacity:1; transform:translateX(0); }
+  .slide::before, .slide::after {
+    content:""; position:absolute; right:0; width:70px; height:70px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--deep-blue-2) 100%);
+    pointer-events:none; z-index:2;
+  }
+  .slide::before { top:0; }
+  .slide::after  { bottom:0; }
+  .slide-rightline { position:absolute; right:35px; top:35%; height:30%;
+    width:2px; background:var(--accent); z-index:1; pointer-events:none; }
+
+  .topbar { display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:3vh; z-index:5; position:relative; }
+  .brand { display:flex; align-items:center; gap:10px;
+    font-size:.85rem; font-weight:500; color:var(--fg-1); letter-spacing:.05em; }
+  .brand-icon { width:28px; height:28px; display:flex; align-items:center;
+    justify-content:center; color:var(--accent); }
+  .brand-icon svg { width:100%; height:100%; }
+  .topnav { display:flex; gap:3rem; font-size:.82rem; color:var(--fg-2); letter-spacing:.02em; }
+  .topnav span.active { color:var(--accent); font-weight:600; }
+
+  h1,h2,h3,h4 { margin:0; font-weight:800; letter-spacing:-.02em; line-height:1.1; }
+  h1 { font-size:4.4rem; color:var(--fg-0); }
+  h2 { font-size:2.4rem; color:var(--fg-0); }
+  h3 { font-size:1.2rem; font-weight:700; color:var(--fg-0); letter-spacing:-.01em; }
+  h4 { font-size:1rem; font-weight:600; color:var(--fg-0); }
+  p  { font-size:1.05rem; line-height:1.7; color:var(--fg-1); margin:.5em 0; }
+  ul { line-height:1.75; color:var(--fg-1); padding-left:1.3em; margin:.4em 0; }
+  ul li { margin:.3em 0; font-size:1rem; }
+  strong { color:var(--fg-0); font-weight:700; }
+  em { font-style:normal; color:var(--accent-dark); font-weight:600; }
+  .muted { color:var(--fg-2); }
+  .small { font-size:.85rem; }
+  .title-cyan { color:var(--accent); }
+
+  .slide-head { display:flex; align-items:baseline; justify-content:space-between;
+    gap:1.5rem; margin-bottom:2.5vh; }
+  .slide-head .tag { font-size:.72rem; text-transform:uppercase; letter-spacing:.3em;
+    color:var(--accent); font-weight:700; margin-bottom:.5rem; }
+  .slide-head .owner { font-size:.75rem; color:var(--fg-2); letter-spacing:.15em;
+    text-transform:uppercase; font-weight:500; }
+  .slide-head h2 { margin-top:.1em; max-width:85%; }
+
+  .slide-body { flex:1; display:flex; flex-direction:column; gap:1.3rem;
+    min-height:0; z-index:3; position:relative; }
+
+  .grid { display:grid; gap:1.4rem; }
+  .grid.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .grid.cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .grid.cols-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+  .card { background:var(--bg); border:1px solid var(--border);
+    border-radius:12px; padding:1.3rem 1.5rem; transition: box-shadow .2s, border-color .2s; }
+  .card:hover { box-shadow:var(--shadow); border-color:var(--accent-light); }
+  .card h3 { display:flex; align-items:center; gap:.55rem; margin-bottom:.5rem; }
+  .card-accent { background: linear-gradient(135deg, rgba(59,182,245,.06), rgba(59,182,245,0));
+    border-color: var(--accent); }
+  .card-dark { background: linear-gradient(135deg, var(--deep-blue-3), var(--deep-blue-1));
+    color:#fff; border:none; }
+  .card-dark h3, .card-dark strong { color:#fff; }
+  .card-dark p, .card-dark ul { color: rgba(255,255,255,.88); }
+  .card-dark em { color: var(--accent-light); }
+
+  .stat .num { font-size:2.6rem; font-weight:800; color:var(--accent);
+    letter-spacing:-.03em; line-height:1; font-feature-settings:"tnum"; }
+  .stat .num.black { color:var(--fg-0); }
+  .stat .num.warm  { color:var(--warm); }
+  .stat .num.danger { color:var(--danger); }
+  .stat .label { font-size:.72rem; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--fg-2); font-weight:600; margin-bottom:.4rem; }
+  .stat .sub { font-size:.8rem; color:var(--fg-2); margin-top:.3rem; }
+
+  .pill { display:inline-flex; align-items:center; background:var(--bg);
+    color:var(--accent); border:1.5px solid var(--accent); padding:.22rem .75rem;
+    border-radius:999px; font-size:.76rem; font-weight:600; letter-spacing:.04em; margin-right:.4rem; }
+  .pill.solid { background:var(--accent); color:#fff; }
+  .pill.dark  { background:var(--deep-blue-2); color:#fff; border-color:var(--deep-blue-2); }
+
+  table { width:100%; border-collapse:collapse; font-size:.95rem; }
+  th,td { text-align:left; padding:.7rem 1rem; border-bottom:1px solid var(--border); }
+  thead th { font-size:.72rem; text-transform:uppercase; letter-spacing:.14em;
+    color:var(--fg-2); font-weight:700; border-bottom:2px solid var(--fg-0); }
+  tbody tr:hover { background:var(--card-bg); }
+  tbody td strong { color:var(--accent-dark); }
+
+  .pipeline { display:flex; align-items:stretch; justify-content:center;
+    gap:.4rem; padding:1.2rem; background:var(--card-bg); border-radius:12px; }
+  .pipe-node { flex:1; padding:.9rem .8rem; background:var(--bg);
+    border:1.5px solid var(--border); border-radius:10px; text-align:center; min-width:0; }
+  .pipe-node.highlight { border-color:var(--accent); }
+  .pipe-node.dark { background: linear-gradient(160deg, var(--deep-blue-3), var(--deep-blue-1));
+    border:none; color:#fff; }
+  .pipe-node.dark h4 { color:#fff; }
+  .pipe-node.dark p { color: rgba(255,255,255,.8); }
+  .pipe-node.dark .step { color: var(--accent-light); }
+  .pipe-node .step { font-size:.65rem; color:var(--accent); letter-spacing:.22em;
+    text-transform:uppercase; font-weight:700; }
+  .pipe-node h4 { margin:.3rem 0 .25rem; font-size:1rem; }
+  .pipe-node p { font-size:.78rem; color:var(--fg-2); margin:0; line-height:1.4; }
+  .arrow { color:var(--accent); font-size:1.6rem; font-weight:300; align-self:center; }
+
+  img.chart { width:100%; max-height:56vh; object-fit:contain;
+    border-radius:10px; background:#fff; padding:.5rem; border:1px solid var(--border); }
+  .fig-caption { font-size:.8rem; color:var(--fg-2); text-align:center;
+    margin-top:.5rem; font-style:italic; }
+
+  code.inline { background:var(--card-bg); border:1px solid var(--border);
+    padding:.1rem .45rem; border-radius:5px; color:var(--accent-dark);
+    font-family:"JetBrains Mono", monospace; font-size:.85em; }
+
+  .page-num { position:absolute; bottom:18px; right:18px; font-size:.8rem;
+    font-weight:700; color:#fff; letter-spacing:.08em; z-index:3; }
+
+  /* title slide */
+  .title-slide .slide-body { justify-content:center; padding-top:4vh; }
+  .title-slide .course-tag { font-size:.78rem; letter-spacing:.3em;
+    text-transform:uppercase; color:var(--fg-2); margin-bottom:1.5rem; font-weight:500; }
+  .title-slide .title-row { display:flex; align-items:center; gap:3rem; }
+  .title-slide .title-img { flex-shrink:0; width:240px; height:240px; border-radius:50%;
+    background: radial-gradient(circle at center, rgba(59,182,245,.10) 0%, rgba(59,182,245,.04) 40%, transparent 70%);
+    display:flex; align-items:center; justify-content:center; }
+  .title-slide .title-img svg { width:100%; height:100%; opacity:.85; }
+  .title-slide h1 { font-size:4.8rem; line-height:1.02; }
+  .title-slide h1 .l2 { display:block; color:var(--accent); }
+  .title-slide .authors { margin-top:2.5rem; display:flex; gap:2.5rem; flex-wrap:wrap; }
+  .author-card .role { font-size:.68rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; }
+  .author-card .name { font-weight:700; font-size:1.05rem; color:var(--fg-0); margin-top:.15rem; }
+  .author-card .id { font-size:.8rem; color:var(--fg-2); margin-top:.1rem;
+    font-family:"JetBrains Mono", monospace; }
+
+  /* section divider */
+  .section-slide .slide-body { justify-content:center; }
+  .section-slide .section-num { font-size:.8rem; letter-spacing:.4em; color:var(--accent);
+    font-weight:700; text-transform:uppercase; }
+  .section-slide h1 { margin:1.2rem 0 1rem; font-size:5rem; line-height:1; }
+  .section-slide h1 .split { color:var(--accent); display:block; }
+  .section-slide .section-sub { font-size:1.15rem; color:var(--fg-2); max-width:60%; line-height:1.5; }
+
+  .slide-foot { position:fixed; bottom:24px; left:7vw; right:110px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:.72rem; color:var(--fg-3); z-index:20; pointer-events:none; }
+  .progress { flex:1; height:2px; margin:0 2rem; background:var(--border);
+    border-radius:2px; overflow:hidden; max-width:40%; }
+  .progress .fill { height:100%; background:var(--accent); width:0%; transition: width .4s ease; }
+  .nav { position:fixed; bottom:24px; right:100px; display:flex; gap:.4rem; z-index:30; }
+  .nav button { background:var(--bg); border:1.5px solid var(--border);
+    color:var(--fg-1); width:32px; height:32px; border-radius:6px; cursor:pointer;
+    font-size:.9rem; display:inline-flex; align-items:center; justify-content:center; transition: all .2s ease; }
+  .nav button:hover { border-color:var(--accent); color:var(--accent); }
+
+  @media (max-width: 1100px) {
+    h1 { font-size:3rem; }
+    .title-slide h1 { font-size:3.4rem; }
+    .section-slide h1 { font-size:3.4rem; }
+    .slide { padding:4vh 5vw; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <!-- SLIDE 1 · TITLE -->
+  <section class="slide title-slide active">
+    <div class="slide-rightline"></div>
+    <div class="topbar">
+      <div class="brand"><div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="32" cy="12" r="2" fill="currentColor"/><circle cx="8" cy="28" r="2" fill="currentColor"/><circle cx="32" cy="28" r="2" fill="currentColor"/><circle cx="20" cy="6" r="1.5" fill="currentColor"/><circle cx="20" cy="34" r="1.5" fill="currentColor"/><path d="M20 20 L8 12 M20 20 L32 12 M20 20 L8 28 M20 20 L32 28 M20 20 L20 6 M20 20 L20 34" stroke="currentColor" stroke-width=".8" opacity=".7"/></svg></div><span>Group 04 · COMP4026</span></div>
+      <div class="topnav"><span class="active">Overview</span><span>Recognition</span><span>Privacy Evaluation</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="course-tag">Group Project · 2nd Semester 2025–26 · Student A presentation</div>
+      <div class="title-row">
+        <div class="title-img">
+          <svg viewBox="0 0 200 200" fill="none">
+            <defs><radialGradient id="g1" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3bb6f5" stop-opacity=".55"/><stop offset="1" stop-color="#3bb6f5" stop-opacity="0"/></radialGradient></defs>
+            <circle cx="100" cy="100" r="80" fill="url(#g1)"/>
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#3bb6f5" stroke-width=".6" opacity=".4"/>
+            <g stroke="#0369a1" stroke-width=".5" fill="#3bb6f5">
+              <circle cx="70" cy="60" r="2"/><circle cx="105" cy="55" r="2"/><circle cx="130" cy="75" r="2"/>
+              <circle cx="60" cy="95" r="2"/><circle cx="95" cy="95" r="2"/><circle cx="135" cy="105" r="2"/>
+              <circle cx="75" cy="125" r="2"/><circle cx="110" cy="135" r="2"/><circle cx="135" cy="145" r="2"/>
+              <circle cx="85" cy="155" r="2"/>
+              <path d="M70 60 L105 55 L130 75 L135 105 L135 145 L110 135 L85 155 L75 125 L60 95 L70 60 Z M95 95 L75 125 M95 95 L110 135 M95 95 L105 55 M95 95 L60 95 M95 95 L130 75" stroke-width=".7" fill="none" opacity=".6"/>
+            </g>
+          </svg>
+        </div>
+        <h1>Face<span class="l2">Recognition</span></h1>
+      </div>
+      <div class="authors">
+        <div class="author-card"><div class="role">Face Recognition &amp; Privacy Evaluation</div><div class="name">Deng Yuchen</div><div class="id">22256342</div></div>
+      </div>
+    </div>
+    <div class="page-num">01</div>
+  </section>
+
+  <!-- SLIDE 2 · PROBLEM + MY ROLE -->
+  <section class="slide">
+    <div class="slide-rightline"></div>
+    <div class="topbar">
+      <div class="brand"><div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="32" cy="12" r="2" fill="currentColor"/><circle cx="8" cy="28" r="2" fill="currentColor"/><circle cx="32" cy="28" r="2" fill="currentColor"/></svg></div><span>Group 04</span></div>
+      <div class="topnav"><span class="active">Overview</span><span>Recognition</span><span>Privacy Evaluation</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-head"><div><div class="tag">Motivation &amp; My Role</div><h2>Measuring <span class="title-cyan">Privacy Protection</span></h2></div><span class="owner">Deng · 1 min</span></div>
+      <p style="max-width: 90%;">Face images are biometric data (GDPR). The project builds a pipeline that anonymises faces while preserving expression. <strong>My task is to quantify how well the anonymiser actually protects identity</strong> — by training a strong face recognition model and running the anonymised output back through it.</p>
+      <div class="pipeline">
+        <div class="pipe-node"><div class="step">Input</div><h4>Pins test image</h4><p>known identity</p></div>
+        <div class="arrow">→</div>
+        <div class="pipe-node dark"><div class="step">Teammate</div><h4>DDPM<br/>Anonymiser</h4><p>new identity</p></div>
+        <div class="arrow">→</div>
+        <div class="pipe-node highlight"><div class="step">Student A</div><h4>FaceRecognizer</h4><p>ResNet-50 + ArcFace</p></div>
+      </div>
+      <div class="grid cols-2">
+        <div class="card" style="border-left:4px solid var(--accent);"><h3><span class="pill">Metric 1 · Reliability</span></h3><p class="small">Accuracy on <strong>original</strong> Pins test set — validates that the ID classifier is trustworthy.</p></div>
+        <div class="card" style="border-left:4px solid var(--deep-blue-2);"><h3><span class="pill dark">Metric 2 · Anonymisation Strength</span></h3><p class="small">Accuracy on <strong>anonymised</strong> images — the lower, the stronger the privacy protection.</p></div>
+      </div>
+    </div>
+    <div class="page-num">02</div>
+  </section>
+
+  <!-- SLIDE 3 · SECTION RECOGNITION -->
+  <section class="slide section-slide">
+    <div class="slide-rightline"></div>
+    <div class="topbar">
+      <div class="brand"><div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="32" cy="12" r="2" fill="currentColor"/></svg></div><span>Group 04</span></div>
+      <div class="topnav"><span>Overview</span><span class="active">Recognition</span><span>Privacy Evaluation</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="section-num">Part 02</div>
+      <h1>Face<span class="split">Recognition</span></h1>
+      <div class="section-sub">Deng Yuchen · ResNet-50 + ArcFace · two-phase training</div>
+    </div>
+    <div class="page-num">03</div>
+  </section>
+
+  <!-- SLIDE 4 · Student A: architecture + two-phase + results (combined) -->
+  <section class="slide">
+    <div class="slide-rightline"></div>
+    <div class="topbar">
+      <div class="brand"><div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="32" cy="12" r="2" fill="currentColor"/></svg></div><span>Group 04</span></div>
+      <div class="topnav"><span>Overview</span><span class="active">Recognition</span><span>Privacy Evaluation</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-head"><div><div class="tag">Student A · Model &amp; Results</div><h2>ResNet-50 + ArcFace → <span class="title-cyan">93.46 %</span> on Pins</h2></div><span class="owner">Deng Yuchen · 2 min</span></div>
+      <div class="pipeline" style="margin-bottom:0;">
+        <div class="pipe-node"><div class="step">Input</div><h4>160 × 160</h4><p>Face crop</p></div>
+        <div class="arrow">→</div>
+        <div class="pipe-node"><div class="step">Backbone</div><h4>ResNet-50</h4><p>ImageNet V2</p></div>
+        <div class="arrow">→</div>
+        <div class="pipe-node"><div class="step">Head</div><h4>FC + BN</h4><p>512-d, L2-norm</p></div>
+        <div class="arrow">→</div>
+        <div class="pipe-node dark"><div class="step">Loss</div><h4>ArcFace</h4><p>s=32, m=0.3</p></div>
+      </div>
+      <div class="grid cols-2">
+        <div class="card" style="border-left:4px solid var(--danger);">
+          <h3>Problem · ArcFace alone fails</h3>
+          <p class="small">m=0.5 from epoch 1 on 105 classes → train acc <strong style="color:var(--danger)">0 %</strong>, val acc plateaus at <strong style="color:var(--danger)">42 %</strong>. The angular margin penalty prevents the head from ever predicting correctly.</p>
+        </div>
+        <div class="card card-accent">
+          <h3>Fix · Two-phase schedule</h3>
+          <ul class="small" style="margin:.3rem 0;">
+            <li><strong>Phase 1</strong> (ep 1–5): CE warmup, label smoothing 0.1</li>
+            <li><strong>Phase 2</strong> (ep 6–30): ArcFace, m=0.3</li>
+            <li>Differential LR · cosine anneal · 24.6 M params</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid cols-4">
+        <div class="card stat"><div class="label">Top-1</div><div class="num">93.46<span style="font-size:1.3rem">%</span></div><div class="sub">105 IDs</div></div>
+        <div class="card stat"><div class="label">Top-5</div><div class="num">98.03<span style="font-size:1.3rem">%</span></div><div class="sub">test set</div></div>
+        <div class="card stat"><div class="label">EER</div><div class="num black">0.0528</div><div class="sub">verification</div></div>
+        <div class="card stat"><div class="label">TAR @ FAR=.01</div><div class="num warm">0.8576</div><div class="sub">operating point</div></div>
+      </div>
+    </div>
+    <div class="page-num">04</div>
+  </section>
+
+
+  <!-- SLIDE 5 · PRIVACY EVALUATION (was JOINT) -->
+  <section class="slide">
+    <div class="slide-rightline"></div>
+    <div class="topbar">
+      <div class="brand"><div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="32" cy="12" r="2" fill="currentColor"/></svg></div><span>Group 04</span></div>
+      <div class="topnav"><span>Overview</span><span>Recognition</span><span class="active">Privacy Evaluation</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-head"><div><div class="tag">Student A · Privacy Evaluation · 314 Pins Test Pairs</div><h2>Top-1 <span class="title-cyan">−72.6 pp</span> on anonymised images</h2></div><span class="owner">Deng · 1.5 min</span></div>
+      <div class="grid cols-4">
+        <div class="card stat"><div class="label">Top-1 · Clean</div><div class="num">90.13<span style="font-size:1.3rem">%</span></div><div class="sub">Metric 1: classifier OK</div></div>
+        <div class="card stat"><div class="label">Top-1 · Anonymised</div><div class="num danger">17.52<span style="font-size:1.3rem">%</span></div><div class="sub">Metric 2: privacy strength</div></div>
+        <div class="card stat"><div class="label">Random Chance</div><div class="num black">0.95<span style="font-size:1.3rem">%</span></div><div class="sub">1 / 105 floor</div></div>
+        <div class="card stat"><div class="label">Accuracy Drop</div><div class="num warm">72.6<span style="font-size:1.3rem"> pp</span></div><div class="sub">privacy gain</div></div>
+      </div>
+      <div class="grid cols-2" style="grid-template-columns: 1.2fr 1fr;">
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          <img class="chart" src="assets/privacy_strict_histogram.png" alt="Similarity distribution" style="max-height:38vh;" />
+          <div class="fig-caption">Green = clean genuine (same-ID pairs) · Orange = original↔anonymised · Grey = impostor · Red line = EER-matched threshold t*=0.35</div>
+        </div>
+        <div class="card card-dark">
+          <h3>Evidence · same 105 identities</h3>
+          <ul class="small">
+            <li>Closed-set Top-1 <strong style="color:#fff">90.13 % → 17.52 %</strong> (−72.6 pp)</li>
+            <li>Cosine orig↔anon <strong style="color:#fff">0.30</strong> vs clean genuine 0.60 vs impostor 0.00</li>
+            <li>Verification auth @ t*=0.35 · clean <strong style="color:#fff">83.1 %</strong> → anon <strong style="color:var(--accent-light)">37.6 %</strong></li>
+            <li>Privacy Protection Rate · <strong style="color:var(--accent-light)">62.4 %</strong></li>
+          </ul>
+          <p class="small" style="margin-top:.6rem; color:rgba(255,255,255,.75);">
+            ⇒ Anonymisation works — Top-1 drops by 72.6 pp — but a residual identity signal (≈ 18× chance) remains and can be targeted by future work.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">05</div>
+  </section>
+
+
+  <!-- SLIDE 6 · THANKS / Q&A -->
+  <section class="slide section-slide">
+    <div class="slide-rightline"></div>
+    <div class="topbar">
+      <div class="brand"><div class="brand-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="32" cy="12" r="2" fill="currentColor"/></svg></div><span>Group 04</span></div>
+      <div class="topnav"><span>Overview</span><span>Recognition</span><span>Privacy Evaluation</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="section-num">Thank You</div>
+      <h1>Questions<span class="split">&amp; Discussion</span></h1>
+      <div class="section-sub" style="margin-top:1.5rem;">COMP4026 · Face Recognition &amp; Privacy Evaluation<br/>Deng Yuchen · 22256342</div>
+      <div style="margin-top:2rem; display:flex; gap:.6rem; flex-wrap:wrap;">
+        <span class="pill solid">Recognition · 93.46 % on Pins</span>
+        <span class="pill">Anonymised Top-1 · 17.52 %</span>
+        <span class="pill dark">Privacy Protection · 62.4 %</span>
+      </div>
+    </div>
+    <div class="page-num">06</div>
+  </section>
+</div>
+<div class="nav">
+  <button id="prev" title="Previous">◀</button>
+  <button id="next" title="Next">▶</button>
+</div>
+<div class="slide-foot">
+  <div style="letter-spacing:.14em; text-transform:uppercase; font-weight:600;">COMP4026 · Anonymised Facial Expression Recognition · 7-min</div>
+  <div class="progress"><div class="fill" id="progressFill"></div></div>
+  <div></div>
+</div>
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+  function show(i){
+    idx = Math.max(0, Math.min(total-1, i));
+    slides.forEach((s,k)=>s.classList.toggle('active', k===idx));
+    document.getElementById('progressFill').style.width = ((idx+1)/total*100)+'%';
+    const n = slides[idx].querySelector('.page-num');
+    if(n) n.textContent = String(idx+1).padStart(2,'0');
+  }
+  document.getElementById('prev').onclick = ()=> show(idx-1);
+  document.getElementById('next').onclick = ()=> show(idx+1);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){e.preventDefault(); show(idx+1);}
+    if(e.key==='ArrowLeft'  || e.key==='PageUp'){e.preventDefault(); show(idx-1);}
+    if(e.key==='Home') show(0);
+    if(e.key==='End')  show(total-1);
+  });
+  document.getElementById('deck').addEventListener('click', (e)=>{
+    if(e.target.closest('.nav')) return;
+    const w = window.innerWidth;
+    if(e.clientX > w*0.5) show(idx+1); else show(idx-1);
+  });
+  show(0);
+</script>
+</body>
+</html>
