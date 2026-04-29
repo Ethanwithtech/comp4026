@@ -2,6 +2,8 @@
 
 This project implements a face anonymization pipeline using a Conditional UNet and a diffusion-based denoising process. The model generates anonymous faces while preserving the structural integrity of the original image, ensuring privacy protection while maintaining visual realism.
 
+A Pre-trained anonymized model can be download in Github Releases.
+
 ## Features
 - **Face Anonymization**: Generates anonymous faces that retain the structure of the original face but alter the identity.
 - **Landmark and Mask Extraction**: Extracts facial landmarks and masks to guide the anonymization process.
@@ -40,7 +42,7 @@ pip install torch torchvision opencv-python pillow numpy mediapipe diffusers
 
 ## Usage
 
-### 1. Download the Dataset
+### 1. Download the Dataset（the dataset has already been download）
 Run the `download_dataset.py` script to download the CelebA-HQ dataset:
 ```bash
 python download_dataset.py
