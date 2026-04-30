@@ -1,2 +1,12 @@
 student_a_face_recognition/models/*.pth
-student_a_face_recognition/models/*.pth
+student_B_anonymization/checkpoints/*.pth
+student_B_anonymization/venv/
+student_B_anonymization/.venv/
+student_B_anonymization/__pycache__/
+student_B_anonymization/.ipynb_checkpoints/
+student_B_anonymization/results/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+.ipynb_checkpoints/
+
